@@ -99,6 +99,7 @@ import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
+import org.futo.inputmethod.latin.uix.SHOW_EMOJI_KITCHEN
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
 import org.futo.inputmethod.latin.uix.SettingsKey
 import org.futo.inputmethod.latin.uix.getSettingBlocking
@@ -866,6 +867,15 @@ val TypingSettingsMenu = UserSettingsMenu(
             title = R.string.typing_settings_suggest_emojis,
             subtitle = R.string.typing_settings_suggest_emojis_subtitle,
             setting = SHOW_EMOJI_SUGGESTIONS,
+            icon = {
+                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_emoji_kitchen,
+            subtitle = R.string.typing_settings_emoji_kitchen_subtitle,
+            setting = SHOW_EMOJI_KITCHEN,
             icon = {
                 Icon(painterResource(id = R.drawable.smile), contentDescription = null,
                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))

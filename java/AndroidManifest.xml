@@ -21,6 +21,8 @@
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- Personal build: downloads Emoji Kitchen stickers from gstatic.com -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -212,6 +214,17 @@
             android:name=".content.KbContentProvider"
             android:exported="false"
             android:grantUriPermissions="true" />
+
+        <!-- Personal build: serves downloaded Emoji Kitchen stickers to the app they are sent to -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.emojikitchen"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/emoji_kitchen_paths" />
+        </provider>
 
         <provider
             android:authorities="${applicationId}.clipboard"

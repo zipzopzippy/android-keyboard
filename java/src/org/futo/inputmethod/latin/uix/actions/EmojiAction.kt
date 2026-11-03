@@ -111,7 +111,10 @@ import org.futo.inputmethod.latin.uix.EmojiTracker.useEmoji
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.LocalManager
 import org.futo.inputmethod.latin.uix.PersistentActionState
+import org.futo.inputmethod.latin.uix.SHOW_EMOJI_KITCHEN
 import org.futo.inputmethod.latin.uix.SettingsKey
+import org.futo.inputmethod.latin.uix.actions.emoji.kitchen.EmojiKitchen
+import org.futo.inputmethod.latin.uix.actions.emoji.kitchen.EmojiKitchenRow
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiItem
 import org.futo.inputmethod.latin.uix.actions.emoji.EmojiView
 import org.futo.inputmethod.latin.uix.settings.useDataStore
@@ -1169,6 +1172,29 @@ val EmojiAction = Action(
         object : ActionWindow() {
             private val searchText = mutableStateOf("")
             private val searching = mutableStateOf(false)
+            // Emoji Kitchen: the emoji whose stickers are shown, and the emojis tapped before it
+            private val kitchenEmoji = mutableStateOf<String?>(null)
+            private val kitchenRecentEmojis = mutableStateOf(emptyList<String>())
+
+            private fun onEmojiTyped(emoji: String) {
+                val context = manager.getContext()
+                if (DataStoreHelper.getSetting(SHOW_EMOJI_KITCHEN) == false ||
+                    !manager.appSupportsImageInsertion(EmojiKitchen.MIME_TYPE, true)
+                ) {
+                    return
+                }
+                manager.getLifecycleScope().launch {
+                    if (EmojiKitchen.supports(context, emoji)) {
+                        kitchenEmoji.value?.let { previous ->
+                            kitchenRecentEmojis.value = (listOf(previous) + kitchenRecentEmojis.value)
+                                .filter { it != emoji }
+                                .distinct()
+                                .take(5)
+                        }
+                        kitchenEmoji.value = emoji
+                    }
+                }
+            }
 
             @Composable
             override fun windowName(): String {
@@ -1179,11 +1205,29 @@ val EmojiAction = Action(
             override fun WindowContents(keyboardShown: Boolean) {
                 val view = LocalView.current
                 PersistentEmojiState.emojis.value?.let { emojis ->
+                  Column {
+                    val shownKitchenEmoji = kitchenEmoji.value
+                    if (shownKitchenEmoji != null && !searching.value) {
+                        EmojiKitchenRow(
+                            emoji = shownKitchenEmoji,
+                            preferredPartners = kitchenRecentEmojis.value,
+                            onSend = { _, file ->
+                                val uri = EmojiKitchen.uriForSticker(manager.getContext(), file)
+                                manager.typeUri(uri, listOf(EmojiKitchen.MIME_TYPE), true)
+                                manager.performHapticAndAudioFeedback(Constants.CODE_EMOJI, view)
+                            },
+                            onClose = {
+                                kitchenEmoji.value = null
+                                kitchenRecentEmojis.value = emptyList()
+                            },
+                        )
+                    }
                     EmojiGrid(onClick = {
                         if(it.category == "ASCII") {
                             manager.typeTextSurroundedByWhitespace(it.emoji)
                         } else {
                             manager.typeText(it.emoji)
+                            onEmojiTyped(it.emoji)
                         }
                         manager.getLifecycleScope().launch {
                             manager.getContext().useEmoji(it.emoji)
@@ -1202,6 +1246,7 @@ val EmojiAction = Action(
                         }
                     }, emojis = emojis, keyboardShown = keyboardShown, emojiMap = PersistentEmojiState.emojiMap,
                         isSearching = searching.value, searchFilter = searchText.value)
+                  }
                 }
             }
 

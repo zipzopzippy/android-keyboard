@@ -458,6 +458,10 @@
     <string name="typing_settings_title">Typing preferences</string>
     <string name="typing_settings_suggest_emojis">Emoji Suggestions</string>
     <string name="typing_settings_suggest_emojis_subtitle">Suggest emojis while you\'re typing</string>
+    <string name="typing_settings_emoji_kitchen" translatable="false">Emoji Kitchen</string>
+    <string name="typing_settings_emoji_kitchen_subtitle" translatable="false">After tapping an emoji, show stickers that mix it with other emojis. Stickers are downloaded from Google (gstatic.com).</string>
+    <string name="emoji_kitchen_close" translatable="false">Close Emoji Kitchen</string>
+    <string name="emoji_kitchen_download_failed" translatable="false">Could not download the sticker. Check that the keyboard has network access.</string>
     <string name="typing_settings_vibration_strength">Vibration</string>
     <string name="typing_settings_vibration_strength_default">Default</string>
     <string name="typing_settings_keypress_sound_volume">Sound Volume</string>

@@ -393,3 +393,8 @@ val SHOW_EMOJI_SUGGESTIONS = SettingsKey(
     key = booleanPreferencesKey("suggestEmojis"),
     default = true
 )
+
+val SHOW_EMOJI_KITCHEN = SettingsKey(
+    key = booleanPreferencesKey("showEmojiKitchen"),
+    default = true
+)
