@@ -35,7 +35,8 @@ import org.futo.inputmethod.latin.uix.theme.KeyBackground
 import org.futo.inputmethod.v2keyboard.Direction
 import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
-val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), true)
+val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), false)
+val SeamlessActionBarSetting = SettingsKey(booleanPreferencesKey("seamlessActionBar"), true)
 val HiddenKeysSetting = SettingsKey(booleanPreferencesKey("hiddenKeys1"), false)
 val KeyHintsSetting   = SettingsKey(booleanPreferencesKey("keyHints"), false)
 
@@ -147,6 +148,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     DynamicThemeProvider {
     override val layers: List<Int> get() = kdcMatcher.layers
     override val keyBorders: Boolean
+    override val seamlessActionBar: Boolean
 
     override val keyboardColor: Int
     override val actionBarColor: Color
@@ -299,6 +301,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = advanced.keyBorders ?: context.getSettingBlocking(KeyBordersSetting)
+        seamlessActionBar = context.getSettingBlocking(SeamlessActionBarSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
         hintColor = colorScheme.hintColor?.toArgb() ?: colorScheme.onSurfaceVariant.toArgb()
@@ -324,7 +327,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
 
         val transparent = Color.Transparent.toArgb()
         keyboardColor = colorScheme.keyboardSurface.toArgb()
-        actionBarColor = if(keyBorders) {
+        actionBarColor = if(keyBorders || seamlessActionBar) {
             colorScheme.keyboardSurface
         } else {
             colorScheme.keyboardSurfaceDim
@@ -402,6 +405,13 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
             addIcon("action_${i}", it.icon, onKeyColor)
         }
 
+        if(advanced.florisStyle && !keyBorders) {
+            // FlorisBoard draws hints small and faint so the main letters stand out
+            colors[R.styleable.Keyboard_Key_keyHintLetterColor] = onKeyColorThird
+            colors[R.styleable.Keyboard_Key_keyHintLabelColor] = onKeyColorThird
+            colors[R.styleable.Keyboard_Key_actionKeyTextColor] = colorScheme.onPrimaryContainer.toArgb()
+        }
+
         if(!showKeyHints) {
             colors[R.styleable.Keyboard_Key_keyHintLetterColor] = transparent
             colors[R.styleable.Keyboard_Key_keyHintLabelColor] = transparent
@@ -423,13 +433,17 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         val roundness = advanced.keyRoundness
         val keyCornerRadius = 9.dp * roundness
 
-        val spaceCornerRadius = if(keyBorders) {
+        val florisStyle = advanced.florisStyle && !keyBorders
+
+        val spaceCornerRadius = if(keyBorders || florisStyle) {
             keyCornerRadius
         } else {
             48.dp * roundness
         }
 
-        val actionKeyRadius = 128.dp * roundness
+        val actionKeyRadius = if(florisStyle) keyCornerRadius else 128.dp * roundness
+        val actionKeyColor = if(florisStyle) colorScheme.primaryContainer else colorScheme.primary
+        val onActionKeyColor = if(florisStyle) colorScheme.onPrimaryContainer else colorScheme.onPrimary
 
         keyStyles = mapOf(
             KeyVisualStyle.Action to if(expertMode) {
@@ -442,8 +456,8 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
                 )
             } else {
                 VisualStyleDescriptor(
-                    backgroundDrawable = coloredRoundedRectangle(colorScheme.primary.toArgb(), dp(actionKeyRadius)),
-                    foregroundColor    = colorScheme.onPrimary.toArgb(),
+                    backgroundDrawable = coloredRoundedRectangle(actionKeyColor.toArgb(), dp(actionKeyRadius)),
+                    foregroundColor    = onActionKeyColor.toArgb(),
 
                     backgroundDrawablePressed = coloredRoundedRectangle(colorScheme.secondaryContainer.toArgb(), dp(actionKeyRadius)),
                     foregroundColorPressed    = colorScheme.onSecondaryContainer.toArgb()

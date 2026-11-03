@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.KeyBordersSetting
+import org.futo.inputmethod.latin.uix.SeamlessActionBarSetting
 import org.futo.inputmethod.latin.uix.KeyboardBackground
 import org.futo.inputmethod.latin.uix.KeyboardColorScheme
 import org.futo.inputmethod.latin.uix.THEME_KEY
@@ -415,6 +416,11 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
                             SettingToggleDataStore(
                                 title = stringResource(R.string.theme_settings_key_borders),
                                 setting = KeyBordersSetting
+                            )
+                            SettingToggleDataStore(
+                                title = stringResource(R.string.theme_settings_seamless_action_bar),
+                                subtitle = stringResource(R.string.theme_settings_seamless_action_bar_subtitle),
+                                setting = SeamlessActionBarSetting
                             )
                         }
                     }

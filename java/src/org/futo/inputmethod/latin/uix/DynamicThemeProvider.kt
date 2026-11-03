@@ -39,6 +39,9 @@ interface DynamicThemeProvider {
     val layers: List<Int>
     val keyBorders: Boolean
 
+    /** Personal build: the suggestion bar has the keyboard's color and no separator lines */
+    val seamlessActionBar: Boolean get() = false
+
     val keyboardColor: Int
     val keyColor: Int
 

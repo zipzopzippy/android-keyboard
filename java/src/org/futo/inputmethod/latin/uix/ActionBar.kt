@@ -800,6 +800,7 @@ fun RowScope.PinnedActionItems(onSelect: (Action) -> Unit, onLongSelect: (Action
 @Composable
 fun ActionSep(isExtra: Boolean = false) {
     if(isExtra && (LocalInspectionMode.current || LocalThemeProvider.current.keyBorders)) return
+    if(!LocalInspectionMode.current && LocalThemeProvider.current.seamlessActionBar) return
 
     val sepCol = LocalKeyboardScheme.current.keyboardContainer
 
@@ -854,7 +855,11 @@ fun ActionBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1.0f),
-                color = LocalKeyboardScheme.current.keyboardSurfaceDim//actionBarColor()
+                color = if(LocalThemeProvider.current.seamlessActionBar) {
+                    actionBarColor()
+                } else {
+                    LocalKeyboardScheme.current.keyboardSurfaceDim
+                }
             ) {
                 ActionItems(onActionActivated, onActionAltActivated)
             }

@@ -15,6 +15,7 @@ import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaDark
 import org.futo.inputmethod.latin.uix.theme.presets.DeepSeaLight
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultDarkScheme
 import org.futo.inputmethod.latin.uix.theme.presets.DefaultLightScheme
+import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkFlorisTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicDarkTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicLightTheme
 import org.futo.inputmethod.latin.uix.theme.presets.DynamicSystemTheme
@@ -40,6 +41,7 @@ val ThemeOptions = mapOf(
     DefaultDarkScheme.key to DefaultDarkScheme,
     DefaultLightScheme.key to DefaultLightScheme,
 
+    DynamicDarkFlorisTheme.key to DynamicDarkFlorisTheme,
     DynamicSystemTheme.key to DynamicSystemTheme,
     DynamicDarkTheme.key to DynamicDarkTheme,
     DynamicLightTheme.key to DynamicLightTheme,
@@ -71,8 +73,8 @@ fun defaultThemeOption(context: Context): ThemeOption =
     if(context.resources.getBoolean(R.bool.use_dev_styling)) {
         DevTheme
     } else {
-        if(DynamicSystemTheme.available(context)) {
-            DynamicSystemTheme
+        if(DynamicDarkFlorisTheme.available(context)) {
+            DynamicDarkFlorisTheme
         } else {
             DefaultDarkScheme
         }

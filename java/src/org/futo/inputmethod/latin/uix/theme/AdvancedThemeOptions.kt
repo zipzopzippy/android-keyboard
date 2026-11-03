@@ -42,4 +42,7 @@ data class AdvancedThemeOptions(
     val hintWeight: Float? = null,
 
     val centerHints: Boolean = false,
+
+    /** Personal build: FlorisBoard-like borderless look (flat rounded space and enter keys, muted enter color) */
+    val florisStyle: Boolean = false,
 )
