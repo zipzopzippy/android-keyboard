@@ -738,6 +738,7 @@ Default is %1$s</string>
     <string name="feedback_settings_title" translatable="false">Sound &amp; vibration</string>
     <string name="popup_on_keypress_subtitle" translatable="false">Show an enlarged letter above your finger while you press a key</string>
     <string name="emoji_clipboard_settings_title" translatable="false">Emoji &amp; clipboard</string>
+    <string name="emoji_clipboard_settings_clear_recent_subtitle" translatable="false">Remove the emojis shown under Recent in the emoji panel</string>
     <string name="emoji_clipboard_settings_clipboard_subtitle" translatable="false">History, pinned clips and how long they are kept</string>
     <string name="home_languages_subtitle" translatable="false">Languages, layouts, dictionaries and models</string>
     <string name="home_typing_subtitle" translatable="false">Autocorrect, suggestions, capitals and spacing</string>

@@ -853,11 +853,7 @@ fun EmojiGrid(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
-                .weight(1.0f)
-                .background(
-                    LocalKeyboardScheme.current.keyboardContainer,
-                    RoundedCornerShape(9.dp)
-                ),
+                .weight(1.0f),
             emojis = emojiList,
             onClick = onClick,
             emojiMap = emojiMap,
@@ -1266,7 +1262,7 @@ val EmojiAction = Action(
                 } else {
                     super.WindowTitleBar(rowScope)
                     Surface(
-                        color = LocalKeyboardScheme.current.keyboardContainer,
+                        color = Color.Transparent,
                         contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
                         shape = RoundedCornerShape(24.dp),
                         modifier = Modifier
@@ -1286,25 +1282,7 @@ val EmojiAction = Action(
                         }
                     }
 
-                    IconButton(onClick = {
-                        manager.requestDialog(
-                            resources.getString(R.string.action_emoji_clear_recent_emojis_question),
-                            listOf(
-                                DialogRequestItem(resources.getString(R.string.action_emoji_clear_recent_emojis_cancel)) {},
-                                DialogRequestItem(resources.getString(R.string.action_emoji_clear_recent_emojis_clear)) {
-                                    runBlocking {
-                                        manager.getContext().resetRecentEmojis()
-                                    }
-                                    manager.closeActionWindow()
-                                },
-                            ),
-                            {}
-                        )
-                    }) {
-                        Icon(painterResource(id = R.drawable.close), contentDescription = stringResource(
-                            R.string.action_emoji_clear_recent_emojis_content_description
-                        ))
-                    }
+                    // Personal build: "Clear recent emojis" lives in Settings > Emoji & clipboard
 
                 }
             }

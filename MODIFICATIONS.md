@@ -18,6 +18,12 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
 - **Seamless suggestion bar** setting (on by default, next to "Key borders"): the suggestion bar
   uses the keyboard's color and has no dividing line.
 - Key borders are off by default.
+- Flatter emoji panel and search: no filled background behind the emoji grid, the Emoji Kitchen row
+  or search fields, and "Clear recent emojis" moved from the panel header to Settings → Emoji &
+  clipboard.
+- Symbols page (`java/personal/assets/layouts/Special/symbols.yaml`): the row under the number row
+  has 9 keys (`@ # $ % & - + ( )`, without `_`, which is still on long-press of `-`), so each symbol
+  sits exactly over the letter that shows it as a hint.
 - **Reorganized settings.** The home screen lists one page per topic: Languages & models, Typing &
   autocorrect, Swipe & gestures, Layout & keys, Sound & vibration, Emoji & clipboard, Toolbar &
   actions, Voice input, Theme, Backup & restore, and Help & feedback. Settings moved to the page

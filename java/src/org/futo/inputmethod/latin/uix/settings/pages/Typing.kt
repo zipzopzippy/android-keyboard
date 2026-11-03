@@ -1,5 +1,13 @@
 package org.futo.inputmethod.latin.uix.settings.pages
 
+import org.futo.inputmethod.latin.uix.settings.NavigationItem
+import org.futo.inputmethod.latin.uix.EmojiTracker.resetRecentEmojis
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import android.content.Context
 import android.media.AudioManager
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -1074,6 +1082,34 @@ val EmojiClipboardMenu = UserSettingsMenu(
                     tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         ),
+        UserSetting(name = R.string.action_emoji_clear_recent_emojis_content_description) {
+            val context = LocalContext.current
+            val scope = rememberCoroutineScope()
+            var confirming by remember { mutableStateOf(false) }
+            NavigationItem(
+                title = stringResource(R.string.action_emoji_clear_recent_emojis_content_description),
+                subtitle = stringResource(R.string.emoji_clipboard_settings_clear_recent_subtitle),
+                style = NavigationItemStyle.MiscNoArrow,
+                navigate = { confirming = true }
+            )
+            if (confirming) {
+                AlertDialog(
+                    onDismissRequest = { confirming = false },
+                    title = { Text(stringResource(R.string.action_emoji_clear_recent_emojis_question)) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            confirming = false
+                            scope.launch { context.resetRecentEmojis() }
+                        }) { Text(stringResource(R.string.action_emoji_clear_recent_emojis_clear)) }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { confirming = false }) {
+                            Text(stringResource(R.string.action_emoji_clear_recent_emojis_cancel))
+                        }
+                    }
+                )
+            }
+        },
         userSettingNavigationItem(
             title = R.string.action_clipboard_manager_settings_title,
             subtitle = R.string.emoji_clipboard_settings_clipboard_subtitle,

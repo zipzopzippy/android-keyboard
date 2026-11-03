@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -81,14 +80,11 @@ fun EmojiKitchenRow(
         listState.scrollToItem(0)
     }
 
-    // Same container as the emoji grid below it, so the two line up
     Row(
         modifier = modifier
             .padding(bottom = GapBelowRow)
             .fillMaxWidth()
-            .height(RowHeight)
-            .background(LocalKeyboardScheme.current.keyboardContainer, RoundedCornerShape(9.dp))
-            .clip(RoundedCornerShape(9.dp)),
+            .height(RowHeight),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LazyRow(
@@ -125,7 +121,7 @@ fun EmojiKitchenRow(
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                tint = LocalKeyboardScheme.current.onKeyboardContainer,
+                tint = LocalKeyboardScheme.current.onSurface,
                 modifier = Modifier.size(20.dp),
             )
         }
@@ -167,7 +163,7 @@ private fun StickerItem(sticker: EmojiKitchenSticker, onClick: () -> Unit) {
                     .fillMaxHeight(),
             )
             // Offline or network permission off: show which emojis would be mixed
-            else -> Text(text = description, fontSize = 18.sp, color = LocalKeyboardScheme.current.onKeyboardContainer)
+            else -> Text(text = description, fontSize = 18.sp, color = LocalKeyboardScheme.current.onSurface)
         }
     }
 }
