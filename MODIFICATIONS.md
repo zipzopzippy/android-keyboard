@@ -23,7 +23,8 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
   clipboard.
 - Symbols page (`java/personal/assets/layouts/Special/symbols.yaml`): the row under the number row
   has 9 keys (`@ # $ % & - + ( )`, without `_`, which is still on long-press of `-`), so each symbol
-  sits exactly over the letter that shows it as a hint.
+  sits exactly over the letter that shows it as a hint. `_` takes the place of `℅` on the second
+  symbols page (`symbols_shift.yaml`).
 - **Reorganized settings.** The home screen lists one page per topic: Languages & models, Typing &
   autocorrect, Swipe & gestures, Layout & keys, Sound & vibration, Emoji & clipboard, Toolbar &
   actions, Voice input, Theme, Backup & restore, and Help & feedback. Settings moved to the page

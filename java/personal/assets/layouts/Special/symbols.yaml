@@ -9,8 +9,8 @@ rows:
     # Only show this row if number row is active on main layout
     numRowMode: Filler
   # Personal build: 9 keys, the same as the letter row below the number row, so each symbol sits
-  # exactly over the letter that shows it as a hint (@ over a, # over s, ...). "_" is still on
-  # long-press of "-".
+  # exactly over the letter that shows it as a hint (@ over a, # over s, ...). "_" moved to the
+  # second symbols page, and is still on long-press of "-".
   - letters:
       - "@"
       - ["#", "№"]
