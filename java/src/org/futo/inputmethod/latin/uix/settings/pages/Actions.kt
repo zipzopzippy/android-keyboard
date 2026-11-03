@@ -29,6 +29,18 @@ import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
 import org.futo.inputmethod.latin.uix.settings.userSettingNavigationItem
 import org.futo.inputmethod.latin.uix.urlEncode
 
+// Clipboard settings are on the Emoji & clipboard page instead
+private val perActionSettings = AllActionsMap.filterKeys { it != "clipboard_history" }.mapNotNull { v ->
+    v.value.settingsMenu?.let {
+        userSettingNavigationItem(
+            title = v.value.name,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "actions/" + v.key.urlEncode(),
+            icon = v.value.icon
+        )
+    }
+}
+
 val ActionsScreen = UserSettingsMenu(
     title = R.string.action_settings_title,
     navPath = "actions", registerNavPath = true,
@@ -156,19 +168,12 @@ val ActionsScreen = UserSettingsMenu(
             style = NavigationItemStyle.Misc,
             navigateTo = "actionEdit"
         ),
-
-        userSettingDecorationOnly {
-            ScreenTitle(stringResource(R.string.action_settings_action_settings))
-        }
-    ) + AllActionsMap.mapNotNull { v ->
-        v.value.settingsMenu?.let {
-            userSettingNavigationItem(
-                title = v.value.name,
-                style = NavigationItemStyle.HomeTertiary,
-                navigateTo = "actions/" + v.key.urlEncode(),
-                icon = v.value.icon
-            )
-        }
+    ) + perActionSettings.let { items ->
+        if (items.isEmpty()) emptyList() else listOf(
+            userSettingDecorationOnly {
+                ScreenTitle(stringResource(R.string.action_settings_action_settings))
+            }
+        ) + items
     }
 )
 

@@ -218,6 +218,9 @@ val SwipeMenu = UserSettingsMenu(
     title = R.string.swipe_settings_title,
     navPath = "swipe", registerNavPath = true,
     settings = listOf(
+        userSettingDecorationOnly {
+            ScreenTitle(stringResource(R.string.swipe_settings_section_swipe_typing))
+        },
         userSettingToggleSharedPrefs(
             title = R.string.swipe_settings_enable_swipe_typing,
             subtitle = R.string.swipe_settings_enable_swipe_typing_subtitle,
@@ -274,16 +277,10 @@ val SwipeMenu = UserSettingsMenu(
             )
         },
 
+    ) + GestureSettings + listOf(
         userSettingDecorationOnly {
             ScreenTitle(stringResource(R.string.swipe_settings_miscellaneous_title))
         },
-
-        userSettingNavigationItem(
-            title = R.string.swipe_settings_configure_shortcuts,
-            subtitle = R.string.swipe_settings_configure_shortcuts_subtitle,
-            navigateTo = LongPressMenu.navPath,
-            style = NavigationItemStyle.Misc
-        ).copy(appearsInSearch=false),
 
         userSettingDecorationOnly {
             val useLegacy = useDataStoreValue(LegacySwipeSetting)

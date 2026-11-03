@@ -34,6 +34,9 @@ val HelpMenu = UserSettingsMenu(
     title = R.string.help_menu_title,
     navPath = "help", registerNavPath = true,
     settings = listOf(
+        userSettingDecorationOnly {
+            Tip(stringResource(R.string.help_menu_modified_build_notice))
+        },
         UserSetting(
             name = R.string.help_menu_version_name
         ) {

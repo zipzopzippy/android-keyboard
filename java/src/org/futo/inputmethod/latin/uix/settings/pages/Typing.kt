@@ -122,6 +122,7 @@ import org.futo.inputmethod.latin.uix.settings.SyncDataStoreToPreferencesInt
 import org.futo.inputmethod.latin.uix.settings.Tip
 import org.futo.inputmethod.latin.uix.settings.UserSetting
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
+import org.futo.inputmethod.latin.uix.settings.UserSettingsMenuScreen
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStore
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
@@ -536,16 +537,8 @@ private fun LongPressKeyLayoutEditor(context: Context, setting: DataStoreItem<St
     }
 }
 
-val LongPressMenu = UserSettingsMenu(
-    title = R.string.morekey_settings_keys,
-    navPath = "longPress", registerNavPath = true,
-    settings = listOf(
-        userSettingToggleDataStore(
-            title = R.string.morekey_settings_show_hints,
-            subtitle = R.string.morekey_settings_show_hints_subtitle,
-            setting = KeyHintsSetting
-        ).copy(searchTags = R.string.morekey_settings_show_hints_tags),
-
+/** Spacebar and backspace gestures, shown on the swipe typing page */
+val GestureSettings = listOf(
         userSettingDecorationOnly {
             ScreenTitle(stringResource(R.string.morekey_settings_backspace_title))
         },
@@ -635,7 +628,18 @@ val LongPressMenu = UserSettingsMenu(
                 onSet = { setting.setValue(it) },
                 getDisplayName = { modes[it] ?: "?" },
             )
-        },
+        }
+)
+
+val LongPressMenu = UserSettingsMenu(
+    title = R.string.morekey_settings_keys,
+    navPath = "longPress", registerNavPath = true,
+    settings = listOf(
+        userSettingToggleDataStore(
+            title = R.string.morekey_settings_show_hints,
+            subtitle = R.string.morekey_settings_show_hints_subtitle,
+            setting = KeyHintsSetting
+        ).copy(searchTags = R.string.morekey_settings_show_hints_tags),
 
         // TODO: Might not work well for showing up in search
         UserSetting(name = R.string.morekey_settings_layout) {
@@ -820,13 +824,6 @@ val KeyboardSettingsMenu = UserSettingsMenu(
                 Icon(painterResource(id = R.drawable.direction_arrows), contentDescription = null)
             }
         ),
-        userSettingNavigationItem(
-            title = R.string.morekey_settings_title,
-            subtitle = R.string.morekey_settings_subtitle,
-            style = NavigationItemStyle.Misc,
-            navigateTo = "longPress",
-            icon = R.drawable.arrow_up
-        ),
         userSettingToggleDataStore(
             title = R.string.keyboard_settings_show_suggestion_row,
             subtitle = R.string.keyboard_settings_show_suggestion_row_subtitle,
@@ -839,6 +836,13 @@ val KeyboardSettingsMenu = UserSettingsMenu(
             title = R.string.keyboard_settings_inline_autofill,
             subtitle = R.string.keyboard_settings_inline_autofill_subtitle,
             setting = InlineAutofillSetting
+        ),
+        userSettingNavigationItem(
+            title = R.string.morekey_settings_title,
+            subtitle = R.string.morekey_settings_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "longPress",
+            icon = R.drawable.arrow_up
         ),
         userSettingToggleSharedPrefs(
             title = R.string.keyboard_settings_period_key,
@@ -857,28 +861,26 @@ val TypingSettingsMenu = UserSettingsMenu(
     title = R.string.typing_settings_title,
     navPath = "typing", registerNavPath = true,
     settings = listOf(
+        userSettingDecorationOnly { ScreenTitle(stringResource(R.string.typing_settings_section_corrections)) },
+    ) + CorrectionSettings + listOf(
+        userSettingToggleSharedPrefs(
+            title = R.string.typing_settings_revert_correction_on_backspace,
+            key = Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT,
+            default = {true},
+            subtitle = R.string.typing_settings_revert_correction_on_backspace_subtitle
+        ),
+        userSettingNavigationItem(
+            title = R.string.prediction_settings_title,
+            subtitle = R.string.prediction_settings_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = PredictiveTextMenu.navPath
+        ),
+
+        userSettingDecorationOnly { ScreenTitle(stringResource(R.string.typing_settings_section_spacing)) },
         UserSetting(
             name = R.string.typing_settings_auto_space_mode,
             component = {
                 AutoSpacesSetting()
-            }
-        ),
-        userSettingToggleDataStore(
-            title = R.string.typing_settings_suggest_emojis,
-            subtitle = R.string.typing_settings_suggest_emojis_subtitle,
-            setting = SHOW_EMOJI_SUGGESTIONS,
-            icon = {
-                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
-            }
-        ),
-        userSettingToggleDataStore(
-            title = R.string.typing_settings_emoji_kitchen,
-            subtitle = R.string.typing_settings_emoji_kitchen_subtitle,
-            setting = SHOW_EMOJI_KITCHEN,
-            icon = {
-                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
             }
         ),
         userSettingToggleSharedPrefs(
@@ -902,15 +904,28 @@ val TypingSettingsMenu = UserSettingsMenu(
         userSettingToggleSharedPrefs(
             title = R.string.typing_settings_delete_pasted_text_on_backspace,
             key = Settings.PREF_BACKSPACE_DELETE_INSERTED_TEXT,
-            default = {true}
+            default = {true},
+            subtitle = R.string.typing_settings_delete_pasted_text_on_backspace_subtitle
         ),
-        userSettingToggleSharedPrefs(
-            title = R.string.typing_settings_revert_correction_on_backspace,
-            key = Settings.PREF_BACKSPACE_UNDO_AUTOCORRECT,
-            default = {true}
-        ),
+
+        userSettingDecorationOnly { ScreenTitle(stringResource(R.string.typing_settings_section_your_words)) },
+    ) + YourWordsSettings + listOf(
+        userSettingNavigationItem(
+            title = IMESettingsMenu.title,
+            subtitle = R.string.typing_settings_language_specific_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = IMESettingsMenu.navPath
+        ).copy(visibilityCheck = { IMESettingsMenu.visibilityCheck!!() }, appearsInSearch = false),
+    )
+)
+
+val SoundVibrationMenu = UserSettingsMenu(
+    title = R.string.feedback_settings_title,
+    navPath = "feedback", registerNavPath = true,
+    settings = listOf(
         userSettingToggleSharedPrefs(
             title = R.string.popup_on_keypress,
+            subtitle = R.string.popup_on_keypress_subtitle,
             key = Settings.PREF_POPUP_ON,
             default = {booleanResource(R.bool.config_default_key_preview_popup)}
         ),
@@ -1028,33 +1043,40 @@ val TypingSettingsMenu = UserSettingsMenu(
     )
 )
 
+val EmojiClipboardMenu = UserSettingsMenu(
+    title = R.string.emoji_clipboard_settings_title,
+    navPath = "emojiClipboard", registerNavPath = true,
+    settings = listOf(
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_suggest_emojis,
+            subtitle = R.string.typing_settings_suggest_emojis_subtitle,
+            setting = SHOW_EMOJI_SUGGESTIONS,
+            icon = {
+                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingToggleDataStore(
+            title = R.string.typing_settings_emoji_kitchen,
+            subtitle = R.string.typing_settings_emoji_kitchen_subtitle,
+            setting = SHOW_EMOJI_KITCHEN,
+            icon = {
+                Icon(painterResource(id = R.drawable.smile), contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f))
+            }
+        ),
+        userSettingNavigationItem(
+            title = R.string.action_clipboard_manager_settings_title,
+            subtitle = R.string.emoji_clipboard_settings_clipboard_subtitle,
+            style = NavigationItemStyle.Misc,
+            navigateTo = "actions/clipboard_history",
+            icon = R.drawable.clipboard
+        ).copy(appearsInSearch = false),
+    )
+)
+
 @Preview(showBackground = true)
 @Composable
 fun KeyboardAndTypingScreen(navController: NavHostController = rememberNavController()) {
-    ScrollableList {
-        if(IMESettingsMenu.visibilityCheck!!()) {
-            ScreenTitle("", showBack = true, navController)
-            IMESettingsMenu.render(showBack = false)
-            ScreenTitle(
-                stringResource(
-                    KeyboardSettingsMenu.title
-                ),
-                showBack = false,
-                navController
-            )
-        } else {
-            ScreenTitle(
-                stringResource(
-                    KeyboardSettingsMenu.title
-                ),
-                showBack = true,
-                navController
-            )
-        }
-
-        KeyboardSettingsMenu.render(showBack = false, showTitle = false)
-        TypingSettingsMenu.render(showBack = false)
-
-        BottomSpacer()
-    }
+    UserSettingsMenuScreen(TypingSettingsMenu)
 }

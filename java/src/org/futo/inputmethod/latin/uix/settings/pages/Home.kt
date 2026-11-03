@@ -73,34 +73,62 @@ val HomeScreenLite = UserSettingsMenu(
             title = R.string.settings_check_for_updates_manually,
             style = NavigationItemStyle.Misc,
             navigate = { nav -> nav.context.openManualUpdateCheck() }
-        ),
+        ).copy(visibilityCheck = { BuildConfig.UPDATE_CHECKING }, appearInSearchIfVisibilityCheckFailed = false),
 
         userSettingNavigationItem(
             title = R.string.language_settings_title,
+            subtitle = R.string.home_languages_subtitle,
             style = NavigationItemStyle.HomePrimary,
             navigateTo = "languages",
             icon = R.drawable.globe
         ),
 
         userSettingNavigationItem(
-            title = R.string.settings_keyboard_typing_title,
+            title = R.string.typing_settings_title,
+            subtitle = R.string.home_typing_subtitle,
             style = NavigationItemStyle.HomeSecondary,
-            navigateTo = "keyboardAndTyping",
-            icon = R.drawable.keyboard
+            navigateTo = TypingSettingsMenu.navPath,
+            icon = R.drawable.text_prediction
         ),
 
         userSettingNavigationItem(
             title = SwipeMenu.title,
-            style = NavigationItemStyle.HomePrimary,
+            subtitle = R.string.home_swipe_subtitle,
+            style = NavigationItemStyle.HomeTertiary,
             navigateTo = SwipeMenu.navPath,
             icon = R.drawable.swipe_icon
         ),
 
         userSettingNavigationItem(
-            title = R.string.prediction_settings_title,
+            title = R.string.keyboard_settings_title,
+            subtitle = R.string.home_layout_subtitle,
+            style = NavigationItemStyle.HomePrimary,
+            navigateTo = KeyboardSettingsMenu.navPath,
+            icon = R.drawable.keyboard
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.feedback_settings_title,
+            subtitle = R.string.home_feedback_subtitle,
+            style = NavigationItemStyle.HomeSecondary,
+            navigateTo = SoundVibrationMenu.navPath,
+            icon = R.drawable.personal_volume
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.emoji_clipboard_settings_title,
+            subtitle = R.string.home_emoji_clipboard_subtitle,
             style = NavigationItemStyle.HomeTertiary,
-            navigateTo = PredictiveTextMenu.navPath,
-            icon = R.drawable.text_prediction
+            navigateTo = EmojiClipboardMenu.navPath,
+            icon = R.drawable.smile
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.action_settings_title,
+            subtitle = R.string.home_actions_subtitle,
+            style = NavigationItemStyle.HomePrimary,
+            navigateTo = "actions",
+            icon = R.drawable.more_horizontal
         ),
 
         UserSetting(
@@ -113,27 +141,31 @@ val HomeScreenLite = UserSettingsMenu(
 
             NavigationItem(
                 title = stringResource(R.string.voice_input_settings_title),
-                style = NavigationItemStyle.HomePrimary,
+                style = NavigationItemStyle.HomeSecondary,
                 subtitle = if(useExternal && name != null) {
                     stringResource(R.string.voice_input_settings_builtin_disabled_notice2, name)
-                } else { null },
+                } else {
+                    stringResource(R.string.home_voice_subtitle)
+                },
                 navigate = { navController!!.navigate(VoiceInputMenu.navPath) },
                 icon = painterResource(R.drawable.mic_fill)
             )
         },
 
         userSettingNavigationItem(
-            title = R.string.action_settings_title,
-            style = NavigationItemStyle.HomeSecondary,
-            navigateTo = "actions",
-            icon = R.drawable.smile
-        ),
-
-        userSettingNavigationItem(
             title = R.string.theme_settings_title,
+            subtitle = R.string.home_theme_subtitle,
             style = NavigationItemStyle.HomeTertiary,
             navigateTo = "themes",
             icon = R.drawable.themes
+        ),
+
+        userSettingNavigationItem(
+            title = R.string.misc_settings_title,
+            subtitle = R.string.home_backup_subtitle,
+            style = NavigationItemStyle.HomePrimary,
+            navigateTo = "misc",
+            icon = R.drawable.personal_backup
         ),
 
         //if(!isPaid) {
@@ -164,12 +196,6 @@ val HomeScreenLite = UserSettingsMenu(
             useDataStoreValue(IS_DEVELOPER) == true || LocalInspectionMode.current
         }),
         //}
-
-        userSettingNavigationItem(
-            title = R.string.misc_settings_title,
-            style = NavigationItemStyle.MiscNoArrow,
-            navigateTo = "misc",
-        ),
 
         userSettingNavigationItem(
             title = R.string.credits_menu_title,

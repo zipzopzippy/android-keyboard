@@ -14,10 +14,6 @@ val MiscMenu = UserSettingsMenu(
     title = R.string.misc_settings_title,
     navPath = "misc", registerNavPath = true,
     settings = listOf(
-        userSettingDecorationOnly {
-            ScreenTitle(stringResource(R.string.settings_export_configuration_title))
-        },
-
         userSettingNavigationItem(
             title = (R.string.settings_export_configuration),
             subtitle = (R.string.settings_export_configuration_subtitle),

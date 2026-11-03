@@ -18,5 +18,12 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
 - **Seamless suggestion bar** setting (on by default, next to "Key borders"): the suggestion bar
   uses the keyboard's color and has no dividing line.
 - Key borders are off by default.
+- **Reorganized settings.** The home screen lists one page per topic: Languages & models, Typing &
+  autocorrect, Swipe & gestures, Layout & keys, Sound & vibration, Emoji & clipboard, Toolbar &
+  actions, Voice input, Theme, Backup & restore, and Help & feedback. Settings moved to the page
+  they belong on (for example, autocorrect and its backspace undo are now together, vibration and
+  sound have their own page, spacebar and backspace gestures moved to the swipe page, and clipboard
+  settings moved out of Toolbar & actions). Most titles and descriptions were rewritten in plainer
+  English. "Check for updates manually" is hidden because this build has update checking off.
 - A `personal` build flavor (`assemblePersonalRelease`): app ID `org.futo.inputmethod.latin.personal`,
   named "FUTO Keyboard (Personal, modified)", with update checking off.

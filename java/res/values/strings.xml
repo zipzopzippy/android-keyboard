@@ -28,7 +28,7 @@
     <string name="sound_on_keypress">Sound on keypress</string>
 
     <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
-    <string name="popup_on_keypress">Popup on keypress</string>
+    <string name="popup_on_keypress">Key popup</string>
 
     <!-- Option to show language switch key [CHAR LIMIT=30] -->
     <string name="show_language_switch_key">Language switch key</string>
@@ -37,25 +37,25 @@
     <string name="abbreviation_unit_milliseconds"><xliff:g id="MILLISECONDS">%s</xliff:g>ms</string>
 
     <!-- Option name for enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=25] -->
-    <string name="use_personalized_dicts">Personalized suggestions</string>
+    <string name="use_personalized_dicts">Learn from your typing</string>
 
     <!-- Option name for enabling or disabling the double-space period feature that lets double tap on spacebar insert a period followed by a space [CHAR LIMIT=30] -->
     <string name="use_double_space_period">Double-space period</string>
     <!-- Description for option enabling or disabling the double-space period feature that lets double tap on spacebar insert a period followed by a space [CHAR LIMIT=65] -->
-    <string name="use_double_space_period_summary">Double tap on spacebar inserts a period followed by a space</string>
+    <string name="use_double_space_period_summary">Tap space twice to type a period and a space</string>
 
     <!-- Option to enable auto capitalization of sentences -->
-    <string name="auto_cap">Auto-capitalization</string>
+    <string name="auto_cap">Capitalize sentences</string>
     <!-- Description for option to enable auto capitalization of sentences -->
-    <string name="auto_cap_summary">Capitalize the first word of each sentence</string>
+    <string name="auto_cap_summary">Start each sentence with a capital letter</string>
 
     <!-- Option to edit personal dictionary. [CHAR_LIMIT=30]-->
     <string name="edit_personal_dictionary">Personal dictionary</string>
 
     <!-- Option to enable showing suggestions -->
-    <string name="prefs_show_suggestions">Show correction suggestions</string>
+    <string name="prefs_show_suggestions">Word suggestions</string>
     <!-- Description for show suggestions -->
-    <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
+    <string name="prefs_show_suggestions_summary">Show suggested words in the suggestion bar as you type</string>
 
     <!-- Option to block potentially offensive words to be shown [CHAR_LIMIT=30] -->
     <string name="prefs_block_potentially_offensive_title">Block offensive words</string>
@@ -69,16 +69,16 @@
 
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
-    <string name="auto_correction">Auto-correction</string>
+    <string name="auto_correction">Autocorrect</string>
     <!-- Description for auto correction [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
-    <string name="auto_correction_summary">Spacebar and punctuation automatically correct mistyped words</string>
+    <string name="auto_correction_summary">Fix misspelled words when you press space or punctuation</string>
     <!-- Search tags for the setting -->
     <string name="auto_correction_tags">autocorrect</string>
 
     <!-- Option to enable using next word suggestions. After the user types a space, with this option on, the keyboard will try to predict the next word. -->
     <string name="bigram_prediction">Next-word suggestions</string>
     <!-- Description for "next word suggestion" option. This displays suggestions even when there is no input, based on the previous word. -->
-    <string name="bigram_prediction_summary">Use the previous word in making suggestions</string>
+    <string name="bigram_prediction_summary">Suggest the next word based on the one before it</string>
 
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Languages</string>
