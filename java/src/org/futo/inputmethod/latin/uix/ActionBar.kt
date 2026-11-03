@@ -305,7 +305,11 @@ fun RowScope.SuggestionItem(words: SuggestedWords, idx: Int, isPrimary: Boolean,
         else -> LocalKeyboardScheme.current.onSurfaceVariant
     }
 
+    // The marks show whether a suggestion came from the language model or the swipe model. The
+    // personal build's seamless bar leaves them out for a cleaner look.
+    val showSourceMarks = LocalInspectionMode.current || !LocalThemeProvider.current.seamlessActionBar
     val iconToUse = when {
+        !showSourceMarks -> null
         wordInfo?.mOriginatesFromTransformerLM == true -> painterResource(id = R.drawable.transformer_suggestion)
         wordInfo?.mOriginatesFromSwipeModel    == true -> painterResource(id = R.drawable.swipemodel_indicator)
         else -> null

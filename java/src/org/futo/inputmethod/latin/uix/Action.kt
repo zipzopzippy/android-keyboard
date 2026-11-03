@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavHostController
 import org.futo.inputmethod.engine.IMEInterface
@@ -131,6 +132,14 @@ abstract class ActionWindow {
 
     open val fixedWindowHeight: Dp?
         get() = null
+
+    /**
+     * Personal build: extra height added on top of the normal window height, so a window can grow
+     * upwards (e.g. the Emoji Kitchen row) instead of squeezing its contents. Read during
+     * composition, so backing it with Compose state makes the window resize.
+     */
+    open val extraWindowHeight: Dp
+        get() = 0.dp
 
     @Composable
     abstract fun windowName(): String

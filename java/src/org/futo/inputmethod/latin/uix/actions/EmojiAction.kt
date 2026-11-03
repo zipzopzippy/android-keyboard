@@ -78,6 +78,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import org.futo.inputmethod.latin.uix.actions.emoji.kitchen.EmojiKitchenRowHeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -1175,6 +1177,9 @@ val EmojiAction = Action(
             // Emoji Kitchen: the emoji whose stickers are shown, and the emojis tapped before it
             private val kitchenEmoji = mutableStateOf<String?>(null)
             private val kitchenRecentEmojis = mutableStateOf(emptyList<String>())
+
+            override val extraWindowHeight: Dp
+                get() = if (kitchenEmoji.value != null && !searching.value) EmojiKitchenRowHeight else 0.dp
 
             private fun onEmojiTyped(emoji: String) {
                 val context = manager.getContext()

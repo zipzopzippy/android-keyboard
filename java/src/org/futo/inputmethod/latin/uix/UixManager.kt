@@ -838,10 +838,11 @@ class UixManager(private val latinIME: LatinIME) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(with(LocalDensity.current) {
-                            currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
+                            (currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
                                 .getInputViewHeight()
                                 .toFloat() / heightDiv.toFloat()).toDp() +
-                                    if (actionsExpanded) ActionBarHeight else 0.dp)
+                                    if (actionsExpanded) ActionBarHeight else 0.dp)) +
+                                    (currWindowActionWindow.value?.extraWindowHeight ?: 0.dp)
                         })
                         .safeKeyboardPadding()
                 ) {

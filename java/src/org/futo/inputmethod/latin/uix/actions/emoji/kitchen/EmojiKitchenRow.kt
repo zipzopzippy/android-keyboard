@@ -8,8 +8,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,8 +49,13 @@ import org.futo.inputmethod.latin.R
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import java.io.File
 
-private val StickerSize = 64.dp
+private val StickerSize = 52.dp
+private val RowHeight = 64.dp
+private val GapBelowRow = 4.dp
 private const val ThumbnailPx = 160
+
+/** How much taller the emoji window gets while the row is shown */
+val EmojiKitchenRowHeight = RowHeight + GapBelowRow
 
 /**
  * A row of Emoji Kitchen stickers mixing [emoji] with other emojis. Tapping one downloads it if needed and
@@ -74,10 +81,14 @@ fun EmojiKitchenRow(
         listState.scrollToItem(0)
     }
 
+    // Same container as the emoji grid below it, so the two line up
     Row(
         modifier = modifier
+            .padding(bottom = GapBelowRow)
             .fillMaxWidth()
-            .height(StickerSize + 8.dp),
+            .height(RowHeight)
+            .background(LocalKeyboardScheme.current.keyboardContainer, RoundedCornerShape(9.dp))
+            .clip(RoundedCornerShape(9.dp)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LazyRow(
@@ -85,6 +96,7 @@ fun EmojiKitchenRow(
                 .weight(1f)
                 .fillMaxHeight(),
             state = listState,
+            contentPadding = PaddingValues(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(stickers, key = { it.url }) { sticker ->
@@ -103,6 +115,7 @@ fun EmojiKitchenRow(
         val closeDescription = stringResource(R.string.emoji_kitchen_close)
         Box(
             modifier = Modifier
+                .padding(end = 4.dp)
                 .size(40.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .clickable(onClick = onClose)
@@ -112,7 +125,7 @@ fun EmojiKitchenRow(
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                tint = LocalKeyboardScheme.current.onSurface,
+                tint = LocalKeyboardScheme.current.onKeyboardContainer,
                 modifier = Modifier.size(20.dp),
             )
         }
@@ -154,7 +167,7 @@ private fun StickerItem(sticker: EmojiKitchenSticker, onClick: () -> Unit) {
                     .fillMaxHeight(),
             )
             // Offline or network permission off: show which emojis would be mixed
-            else -> Text(text = description, fontSize = 18.sp, color = LocalKeyboardScheme.current.onSurface)
+            else -> Text(text = description, fontSize = 18.sp, color = LocalKeyboardScheme.current.onKeyboardContainer)
         }
     }
 }
