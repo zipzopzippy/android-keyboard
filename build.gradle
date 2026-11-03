@@ -306,6 +306,26 @@ android {
             buildConfigField "String", "PAYMENT_PRICE", "FUTOPAY_PRICE"
         }
 
+        // Personal modified build: installs next to official FUTO Keyboard and never offers official
+        // updates, which would not install over it anyway (different app ID and signing key)
+        personal {
+            dimension "buildType"
+            applicationIdSuffix ".personal"
+            versionNameSuffix "-personal"
+
+            // GrapheneOS only runs on 64-bit ARM Pixels
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
+
+            buildConfigField "boolean", "IS_PLAYSTORE_BUILD", "false"
+            buildConfigField "boolean", "UPDATE_CHECKING", "false"
+            buildConfigField "boolean", "UPDATE_CHECKING_NETWORK", "false"
+            buildConfigField "String", "BRANCH", "\"${getBranch()}\""
+
+            buildConfigField "String", "PAYMENT_PRICE", "FUTOPAY_PRICE"
+        }
+
         playstore {
             dimension "buildType"
             applicationIdSuffix ".playstore"
@@ -348,6 +368,12 @@ android {
         stable {
             java.srcDirs = ['common/src', 'java/src', 'java/stable/java']
             manifest.srcFile 'java/stable/AndroidManifest.xml'
+        }
+
+        personal {
+            java.srcDirs = ['common/src', 'java/src', 'java/stable/java']
+            manifest.srcFile 'java/stable/AndroidManifest.xml'
+            res.srcDirs = ['java/personal/res']
         }
 
         unstable {
@@ -428,6 +454,8 @@ dependencies {
     stableImplementation 'ch.acra:acra-dialog:5.11.1'
     unstableImplementation 'ch.acra:acra-mail:5.11.1'
     unstableImplementation 'ch.acra:acra-dialog:5.11.1'
+    personalImplementation 'ch.acra:acra-mail:5.11.1'
+    personalImplementation 'ch.acra:acra-dialog:5.11.1'
 
     implementation 'sh.calvin.reorderable:reorderable:3.0.0'
 

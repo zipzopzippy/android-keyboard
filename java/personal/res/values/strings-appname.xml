@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Personal modified build of FUTO Keyboard -->
+    <string name="english_ime_name">FUTO Keyboard (Personal, modified)</string>
+    <string name="spell_checker_service_name">FUTO Spell Checker (Personal, modified)</string>
+    <string name="english_ime_settings">FUTO Keyboard Settings (Personal, modified)</string>
+    <string name="android_spell_checker_settings">FUTO Spell Checker Settings (Personal, modified)</string>
+</resources>
