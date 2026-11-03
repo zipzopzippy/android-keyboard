@@ -530,9 +530,11 @@ public class KeyboardView extends View {
             paint.setTextScaleX(1.0f);
         }
 
-        // Draw hint label.
+        // Draw hint label. The personal build can hide them on symbol and number pages.
         final String hintLabel = kdc.getHintLabel();
-        if (hintLabel != null) {
+        final boolean hideHintOnThisPage = !mDrawableProvider.getSymbolKeyHints()
+                && mKeyboard != null && mKeyboard.mId != null && !mKeyboard.mId.isAlphabetKeyboard();
+        if (hintLabel != null && !hideHintOnThisPage) {
             paint.setTextSize(kdc.getHintSize());
             paint.setColor(kdc.getHintColor());
 

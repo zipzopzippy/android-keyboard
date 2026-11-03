@@ -42,6 +42,9 @@ interface DynamicThemeProvider {
     /** Personal build: the suggestion bar has the keyboard's color and no separator lines */
     val seamlessActionBar: Boolean get() = false
 
+    /** Personal build: whether key hints are drawn on the symbol and number pages too */
+    val symbolKeyHints: Boolean get() = true
+
     val keyboardColor: Int
     val keyColor: Int
 

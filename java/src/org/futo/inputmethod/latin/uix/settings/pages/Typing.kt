@@ -98,6 +98,7 @@ import org.futo.inputmethod.latin.settings.toLongPressKeyLayoutItems
 import org.futo.inputmethod.latin.uix.AndroidTextInput
 import org.futo.inputmethod.latin.uix.BasicThemeProvider
 import org.futo.inputmethod.latin.uix.KeyHintsSetting
+import org.futo.inputmethod.latin.uix.SymbolKeyHintsSetting
 import org.futo.inputmethod.latin.uix.LocalKeyboardScheme
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_KITCHEN
 import org.futo.inputmethod.latin.uix.SHOW_EMOJI_SUGGESTIONS
@@ -125,6 +126,7 @@ import org.futo.inputmethod.latin.uix.settings.UserSettingsMenu
 import org.futo.inputmethod.latin.uix.settings.UserSettingsMenuScreen
 import org.futo.inputmethod.latin.uix.settings.render
 import org.futo.inputmethod.latin.uix.settings.useDataStore
+import org.futo.inputmethod.latin.uix.settings.useDataStoreValue
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsBool
 import org.futo.inputmethod.latin.uix.settings.useSharedPrefsInt
 import org.futo.inputmethod.latin.uix.settings.userSettingDecorationOnly
@@ -640,6 +642,13 @@ val LongPressMenu = UserSettingsMenu(
             subtitle = R.string.morekey_settings_show_hints_subtitle,
             setting = KeyHintsSetting
         ).copy(searchTags = R.string.morekey_settings_show_hints_tags),
+
+        userSettingToggleDataStore(
+            title = R.string.morekey_settings_show_hints_symbols,
+            subtitle = R.string.morekey_settings_show_hints_symbols_subtitle,
+            setting = SymbolKeyHintsSetting,
+            disabled = { !useDataStoreValue(KeyHintsSetting) }
+        ),
 
         // TODO: Might not work well for showing up in search
         UserSetting(name = R.string.morekey_settings_layout) {

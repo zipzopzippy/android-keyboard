@@ -37,6 +37,8 @@ import org.futo.inputmethod.v2keyboard.KeyVisualStyle
 
 val KeyBordersSetting = SettingsKey(booleanPreferencesKey("keyBorders"), false)
 val SeamlessActionBarSetting = SettingsKey(booleanPreferencesKey("seamlessActionBar"), true)
+/** Personal build: whether key hints also show on the symbol and number pages */
+val SymbolKeyHintsSetting = SettingsKey(booleanPreferencesKey("symbolKeyHints"), true)
 val HiddenKeysSetting = SettingsKey(booleanPreferencesKey("hiddenKeys1"), false)
 val KeyHintsSetting   = SettingsKey(booleanPreferencesKey("keyHints"), false)
 
@@ -149,6 +151,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
     override val layers: List<Int> get() = kdcMatcher.layers
     override val keyBorders: Boolean
     override val seamlessActionBar: Boolean
+    override val symbolKeyHints: Boolean
 
     override val keyboardColor: Int
     override val actionBarColor: Color
@@ -302,6 +305,7 @@ class BasicThemeProvider(val context: Context, val colorScheme: KeyboardColorSch
         expertMode = context.getSettingBlocking(HiddenKeysSetting)
         keyBorders = advanced.keyBorders ?: context.getSettingBlocking(KeyBordersSetting)
         seamlessActionBar = context.getSettingBlocking(SeamlessActionBarSetting)
+        symbolKeyHints = context.getSettingBlocking(SymbolKeyHintsSetting)
         showKeyHints = context.getSettingBlocking(KeyHintsSetting)
 
         hintColor = colorScheme.hintColor?.toArgb() ?: colorScheme.onSurfaceVariant.toArgb()

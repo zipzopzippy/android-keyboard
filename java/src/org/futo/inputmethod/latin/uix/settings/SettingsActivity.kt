@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import org.futo.inputmethod.latin.uix.TryTypingBar
+import androidx.compose.foundation.layout.Column
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -186,7 +188,14 @@ class SettingsActivity : ComponentActivity(), DynamicThemeProviderOwner {
                                     inputMethodSelected.value,
                                     doublePackage.value
                                 ) {
-                                    SettingsNavigator(navController = navController)
+                                    // Personal build: "Try typing here" stays at the bottom of every
+                                    // settings screen, and sits above the keyboard while typing
+                                    Column(Modifier.fillMaxSize()) {
+                                        Box(Modifier.weight(1.0f)) {
+                                            SettingsNavigator(navController = navController)
+                                        }
+                                        TryTypingBar()
+                                    }
                                 }
                             }
                         }

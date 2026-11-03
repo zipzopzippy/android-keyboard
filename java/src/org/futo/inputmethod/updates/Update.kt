@@ -170,7 +170,7 @@ fun ConditionalMigrateUpdateNotice() {
             ) {
                 Box(modifier = Modifier.weight(1.0f)) {
                     Button(onClick = {
-                        context.openURI("https://keyboard.futo.tech/#downloads")
+                        context.openURI(context.getString(R.string.manual_update_notice_url))
                     }, modifier = Modifier.align(Alignment.Center)) {
                         Text(stringResource(R.string.manual_update_notice_visit_site_button))
                     }

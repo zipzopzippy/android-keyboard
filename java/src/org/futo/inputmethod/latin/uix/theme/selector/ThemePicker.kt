@@ -413,15 +413,18 @@ fun ThemePicker(onDeleteCustomTheme: (String) -> Unit, onCustomTheme: () -> Unit
                 item(span = { GridItemSpan(maxCurrentLineSpan) }) {
                     if(ZipThemes.ThemeFileName.fromSetting(currentTheme) == null) {
                         CompositionLocalProvider(LocalLayoutDirection provides originalDirection) {
-                            SettingToggleDataStore(
-                                title = stringResource(R.string.theme_settings_key_borders),
-                                setting = KeyBordersSetting
-                            )
-                            SettingToggleDataStore(
-                                title = stringResource(R.string.theme_settings_seamless_action_bar),
-                                subtitle = stringResource(R.string.theme_settings_seamless_action_bar_subtitle),
-                                setting = SeamlessActionBarSetting
-                            )
+                            // The grid item lays children on top of each other, so stack the toggles
+                            Column {
+                                SettingToggleDataStore(
+                                    title = stringResource(R.string.theme_settings_key_borders),
+                                    setting = KeyBordersSetting
+                                )
+                                SettingToggleDataStore(
+                                    title = stringResource(R.string.theme_settings_seamless_action_bar),
+                                    subtitle = stringResource(R.string.theme_settings_seamless_action_bar_subtitle),
+                                    setting = SeamlessActionBarSetting
+                                )
+                            }
                         }
                     }
                 }

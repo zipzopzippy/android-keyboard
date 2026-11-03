@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Personal modified build of FUTO Keyboard -->
-    <string name="english_ime_name">FUTO Keyboard (Personal, modified)</string>
-    <string name="spell_checker_service_name">FUTO Spell Checker (Personal, modified)</string>
-    <string name="english_ime_settings">FUTO Keyboard Settings (Personal, modified)</string>
-    <string name="android_spell_checker_settings">FUTO Spell Checker Settings (Personal, modified)</string>
+    <string name="english_ime_name">FUTO Keyboard Personal</string>
+    <string name="spell_checker_service_name">FUTO Spell Checker Personal</string>
+    <string name="english_ime_settings">FUTO Keyboard Personal Settings</string>
+    <string name="android_spell_checker_settings">FUTO Spell Checker Personal Settings</string>
+
+    <!-- Notice on the settings home screen: explains what this build uses the network for -->
+    <string name="manual_update_notice_title">About network access</string>
+    <string name="manual_update_notice_paragraph_1">This build only uses the internet for Emoji Kitchen. When you tap an emoji, it downloads the matching sticker images from Google (gstatic.com). Typing, predictions, swipe, voice input and your settings all stay on this device.</string>
+    <string name="manual_update_notice_paragraph_2">You can deny the Network permission in Android settings and everything except stickers keeps working. This build doesn\'t check for updates. New versions are posted on GitHub.</string>
+    <string name="manual_update_notice_url" translatable="false">https://github.com/zipzopzippy/android-keyboard/releases</string>
 </resources>

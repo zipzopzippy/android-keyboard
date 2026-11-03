@@ -26,4 +26,4 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
   settings moved out of Toolbar & actions). Most titles and descriptions were rewritten in plainer
   English. "Check for updates manually" is hidden because this build has update checking off.
 - A `personal` build flavor (`assemblePersonalRelease`): app ID `org.futo.inputmethod.latin.personal`,
-  named "FUTO Keyboard (Personal, modified)", with update checking off.
+  named "FUTO Keyboard Personal", with update checking off.
