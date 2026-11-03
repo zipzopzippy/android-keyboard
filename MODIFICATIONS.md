@@ -32,5 +32,8 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
   sound have their own page, spacebar and backspace gestures moved to the swipe page, and clipboard
   settings moved out of Toolbar & actions). Most titles and descriptions were rewritten in plainer
   English. "Check for updates manually" is hidden because this build has update checking off.
+- Spelling underlines work again: `java/personal/res/xml/method.xml` drops
+  `android:suppressesSpellChecker`, which FUTO sets because it has no spell checker of its own yet.
+  That flag hides the system spell checker's underlines in every app while the keyboard is active.
 - A `personal` build flavor (`assemblePersonalRelease`): app ID `org.futo.inputmethod.latin.personal`,
   named "FUTO Keyboard Personal", with update checking off.

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Personal build: same as java/res/xml/method.xml, but without android:suppressesSpellChecker.
+     FUTO sets it because it has no spell checker of its own yet, which also hides the underlines
+     from the system spell checker in every app. Without it, the spell checker chosen in Android
+     settings (GrapheneOS ships one) underlines misspelled words while this keyboard is active. -->
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="org.futo.inputmethod.latin.uix.settings.SettingsActivity"
+    android:isDefault="true"
+    android:supportsSwitchingToNextInputMethod="true"
+    android:supportsInlineSuggestions="true">
+    <subtype android:icon="@drawable/ic_launcher_foreground"
+        android:label="@string/english_ime_name"
+        android:imeSubtypeMode="keyboard"
+        android:isAsciiCapable="true"
+        android:overridesImplicitlyEnabledSubtype="true" />
+</input-method>
