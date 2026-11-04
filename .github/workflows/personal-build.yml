@@ -1,0 +1,173 @@
+# Builds, signs and publishes the personal APK entirely on GitHub Actions. See PERSONAL_BUILD.md.
+name: Build personal release
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_version:
+        description: Upstream FUTO version this is based on (default is the previous release's)
+        required: false
+      notes:
+        description: The "New in this release" text (default is the commit subjects)
+        required: false
+  # Every push to personal publishes a release
+  push:
+    branches: [ personal ]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: personal-release
+
+env:
+  APK_NAME: FUTO-Keyboard-personal.apk
+  NDK_VERSION: 28.2.13676358
+  # versionCode of the last locally built release. Run numbers are added to it so that it always
+  # goes up, even if the branch is rewritten.
+  VERSION_CODE_BASE: 5177
+  # FUTO version used when neither the base_version input nor an earlier personal tag gives one
+  DEFAULT_BASE_VERSION: 0.1.30
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/personal'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history (without file contents) to find the upstream commit and the changes
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Work out the version
+        env:
+          BASE_VERSION: ${{ inputs.base_version }}
+        run: |
+          # The most recent personal tag, whether or not its release still exists
+          prev_tag="$(git tag --list 'personal-*' --sort=-creatordate | head -n 1)"
+          merge_base="$(git merge-base origin/master HEAD)"
+          upstream="$(git rev-parse --short=7 "$merge_base")"
+          base="$BASE_VERSION"
+          [ -n "$base" ] || [ -z "$prev_tag" ] || base="$(echo "${prev_tag#personal-}" | cut -d- -f1)"
+          base="${base:-$DEFAULT_BASE_VERSION}"
+          if released="$(git tag --points-at HEAD --list 'personal-*' | head -n 1)" && [ -n "$released" ]; then
+            echo "::error::This commit is already released as $released"
+            exit 1
+          fi
+          # Releases are numbered 001, 002, ... one above the highest numbered tag. Up to 6 digits,
+          # so the 8-character commit hashes of older tags are not mistaken for numbers.
+          last="$(git tag --list 'personal-*' \
+            | sed -n 's/^personal-.*-personal-\([0-9]\{3,6\}\)$/\1/p' | sort -n | tail -n 1)"
+          number="$(printf '%03d' "$((10#${last:-0} + 1))")"
+          version="$base-personal-$number"
+          tag="personal-$version"
+          {
+            echo "PREV_TAG=$prev_tag"
+            echo "BASE=$base"
+            echo "UPSTREAM=$upstream"
+            echo "VERSION=$version"
+            echo "TAG=$tag"
+            echo "VERSION_NAME=$base+$upstream"
+            echo "VERSION_CODE=$((VERSION_CODE_BASE + GITHUB_RUN_NUMBER))"
+            echo "BRANCH_NAME=personal"
+          } >> "$GITHUB_ENV"
+
+      - name: Fetch submodules
+        env:
+          GIT_LFS_SKIP_SMUDGE: 1
+        run: |
+          git submodule update --init --recursive --depth 1 --jobs 4
+          git -C java/assets/futo-swipe lfs pull
+          # Without its models the app would still build, just with swipe typing broken
+          if git -C java/assets/futo-swipe lfs ls-files | grep -q ' - '; then
+            echo "::error::Git LFS files in futo-swipe were not downloaded"
+            exit 1
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Install the NDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
+            "ndk;$NDK_VERSION" "platforms;android-35" "build-tools;35.0.0" >/dev/null
+
+      - name: Set up signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.PERSONAL_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.PERSONAL_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.PERSONAL_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.PERSONAL_KEY_ALIAS }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          {
+            printf 'storeFile=%s\n' "$RUNNER_TEMP/release.jks"
+            printf 'storePassword=%s\n' "$STORE_PASSWORD"
+            printf 'keyAlias=%s\n' "$KEY_ALIAS"
+            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
+          } > keystore.properties
+
+      - name: Build
+        run: |
+          ./gradlew assemblePersonalRelease --no-daemon --stacktrace \
+            "-Dorg.gradle.jvmargs=-Xmx6g -Dfile.encoding=UTF-8"
+          mv build/outputs/apk/personal/release/*.apk "$APK_NAME"
+
+      # An update only installs over the app with the same signing key and no lower versionCode
+      - name: Check it updates the previous release
+        run: |
+          build_tools="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -n 1)"
+          cert() { "$build_tools/apksigner" verify --print-certs "$1" | grep 'SHA-256 digest'; }
+          code() { "$build_tools/aapt2" dump badging "$1" | sed -n "s/.*versionCode='\([0-9]*\)'.*/\1/p"; }
+          "$build_tools/aapt2" dump badging "$APK_NAME" | head -n 1
+          cert "$APK_NAME"
+          if [ -z "$PREV_TAG" ] || \
+            ! gh release download "$PREV_TAG" --pattern "$APK_NAME" --dir "$RUNNER_TEMP/prev"; then
+            echo "::warning::No APK released for ${PREV_TAG:-any earlier tag}, so can't check this installs as an update"
+            exit 0
+          fi
+          prev="$RUNNER_TEMP/prev/$APK_NAME"
+          if [ "$(cert "$APK_NAME")" != "$(cert "$prev")" ]; then
+            echo "::error::Signing certificate differs from $PREV_TAG"
+            exit 1
+          fi
+          if [ "$(code "$APK_NAME")" -le "$(code "$prev")" ]; then
+            echo "::error::versionCode $(code "$APK_NAME") is not above $(code "$prev") from $PREV_TAG"
+            exit 1
+          fi
+
+      - name: Publish
+        env:
+          NOTES: ${{ inputs.notes }}
+        run: |
+          sha="$(sha256sum "$APK_NAME" | cut -d' ' -f1)"
+          if [ -z "$NOTES" ]; then
+            # Changes to the app only, leaving out docs and build setup
+            NOTES="$(git log --format='- %s' "${PREV_TAG:-$UPSTREAM}..HEAD" -- . \
+              ':!.github' ':!.gitignore' ':!MODIFICATIONS.md' ':!PERSONAL_BUILD.md')"
+          fi
+          {
+            echo 'Personal, modified build of FUTO Keyboard for GrapheneOS (arm64-v8a). Not made or endorsed by FUTO.'
+            echo "Licensed under the FUTO Source First License 1.1; see [MODIFICATIONS.md]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/personal/MODIFICATIONS.md) for every change."
+            echo
+            echo '**New in this release:**'
+            echo "${NOTES:-No changes to the app.}"
+            echo
+            echo 'Installs as "FUTO Keyboard Personal" (`org.futo.inputmethod.latin.personal`) next to the official app.'
+            echo "Based on FUTO Keyboard $BASE+ (upstream commit $UPSTREAM). Built from branch \`personal\` at $(git rev-parse --short=9 HEAD)."
+            echo
+            echo "SHA-256: \`$sha\`"
+          } > "$RUNNER_TEMP/notes.md"
+          gh release create "$TAG" "$APK_NAME" \
+            --target "$GITHUB_SHA" \
+            --title "FUTO Keyboard Personal $VERSION" \
+            --notes-file "$RUNNER_TEMP/notes.md" \
+            --latest
