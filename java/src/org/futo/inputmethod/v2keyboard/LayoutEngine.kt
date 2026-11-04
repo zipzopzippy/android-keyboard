@@ -606,6 +606,8 @@ data class LayoutEngine(
         add('\u00BC')
         add('\u00BD')
         add('\u00BE')
+        // Empty set symbol, looks like a crossed-out o
+        add('\u2205')
     }.map { it.toString() }.toSet()
     private val showAllHintsSetting = params.mId.mLongPressKeySettings.showHints
 
@@ -631,9 +633,15 @@ data class LayoutEngine(
 
         val hasExplicitHint = data.hint.isNotEmpty()
 
+        // Don't show the settings icon as a hint (e.g. on the comma key)
+        val suppressHint = !hasExplicitHint &&
+                data.moreKeys.firstOrNull()?.mIconId == "action_settings"
+
         val hint = when {
             // If we have an explicit hint, use the specified hint
             hasExplicitHint -> data.hint
+
+            suppressHint -> ""
 
             // If we have no explicit hint, and show hints setting is disabled,
             // then either show a number or nothing
@@ -681,6 +689,7 @@ data class LayoutEngine(
             visualStyle = data.style,
             outputText = data.outputText,
             hintLabel = hint,
+            hintIconId = if(suppressHint || hint?.isNotEmpty() == true) "" else null,
             isFastLongPress = data.fastLongPress,
 
             // Add leftGap and rightGap to the hitbox
