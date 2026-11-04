@@ -35,5 +35,8 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
 - Spelling underlines work again: `java/personal/res/xml/method.xml` drops
   `android:suppressesSpellChecker`, which FUTO sets because it has no spell checker of its own yet.
   That flag hides the system spell checker's underlines in every app while the keyboard is active.
+- No long-press hints for the settings shortcut on the comma key or for `∅` on the `0` key
+  (`java/src/org/futo/inputmethod/v2keyboard/LayoutEngine.kt`). Both are still in the long-press
+  menus.
 - A `personal` build flavor (`assemblePersonalRelease`): app ID `org.futo.inputmethod.latin.personal`,
   named "FUTO Keyboard Personal", with update checking off.
