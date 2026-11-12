@@ -35,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -50,7 +51,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -685,14 +685,15 @@ private fun EmojiCategoriesContainer(
         items(categories) {
             val localizedTitle = localizedCategoryNameMap[it.title]?.let { resources.getString(it) } ?: it.title
             IconButton(
-                onClick = { goToCategory(it) }, modifier = if (it == activeCategoryItem) {
-                    Modifier.background(
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(100)
-                    )
-                } else {
-                    Modifier
-                }.clearAndSetSemantics {
+                onClick = { goToCategory(it) },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = if (it == activeCategoryItem) {
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                    } else {
+                        Color.Transparent
+                    }
+                ),
+                modifier = Modifier.clearAndSetSemantics {
                     contentDescription = resources.getString(R.string.action_emoji_jump_to_category, localizedTitle)
                     toggleableState = ToggleableState(it == activeCategoryItem)
                 }
@@ -1257,30 +1258,16 @@ val EmojiAction = Action(
                 val resources = LocalResources.current
                 if(searching.value) {
                     with(rowScope) {
-                        ActionHeaderSearch(searchText, Modifier.weight(1.0f))
+                        ActionHeaderSearch(searchText, Modifier.weight(1.0f), showSuggestions = true)
                     }
                 } else {
-                    super.WindowTitleBar(rowScope)
-                    Surface(
-                        color = Color.Transparent,
-                        contentColor = LocalKeyboardScheme.current.onKeyboardContainer,
-                        shape = RoundedCornerShape(24.dp),
-                        modifier = Modifier
-                            .minimumInteractiveComponentSize()
-                            .padding(2.dp)
-                            .width(128.dp),
-                        onClick = { searching.value = true }
-                    ) {
-                        Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
-                            Row {
-                                Icon(Icons.Default.Search, contentDescription = null)
-                                Text(
-                                    stringResource(R.string.action_emoji_search_for_emojis), style = Typography.SmallMl, modifier = Modifier
-                                        .alpha(0.75f)
-                                        .align(Alignment.CenterVertically))
-                            }
-                        }
+                    IconButton(onClick = { searching.value = true }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = stringResource(R.string.action_emoji_search_for_emojis)
+                        )
                     }
+                    super.WindowTitleBar(rowScope)
 
                     // Personal build: "Clear recent emojis" lives in Settings > Emoji & clipboard
 

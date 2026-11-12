@@ -21,6 +21,8 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
 - Flatter emoji panel and search: no filled background behind the emoji grid, the Emoji Kitchen row
   or search fields, and "Clear recent emojis" moved from the panel header to Settings → Emoji &
   clipboard.
+- Emoji search is a search icon button left of the "Emoji" title, and shows word suggestions while
+  typing. The selected emoji category has a smaller highlight circle.
 - Symbols page (`java/personal/assets/layouts/Special/symbols.yaml`): the row under the number row
   has 9 keys (`@ # $ % & - + ( )`, without `_`, which is still on long-press of `-`), so each symbol
   sits exactly over the letter that shows it as a hint. `_` takes the place of `℅` on the second

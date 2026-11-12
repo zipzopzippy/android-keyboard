@@ -390,7 +390,7 @@ fun SettingsTextEdit(
 }
 
 @Composable
-fun ActionHeaderSearch(searchText: MutableState<String>, modifier: Modifier = Modifier, placeholder: String? = null) {
+fun ActionHeaderSearch(searchText: MutableState<String>, modifier: Modifier = Modifier, placeholder: String? = null, showSuggestions: Boolean = false) {
     // Personal build: no filled background, for a flatter look
     Surface(
         color = Color.Transparent,
@@ -404,7 +404,7 @@ fun ActionHeaderSearch(searchText: MutableState<String>, modifier: Modifier = Mo
             modifier = Modifier.padding(8.dp),
             contentAlignment = Alignment.CenterStart
         ) {
-            ActionTextEditor(text = searchText, placeholder = placeholder)
+            ActionTextEditor(text = searchText, placeholder = placeholder, autocorrect = showSuggestions)
         }
     }
 }

@@ -841,7 +841,9 @@ class UixManager(private val latinIME: LatinIME) {
                             (currWindowActionWindow.value?.fixedWindowHeight ?: ((latinIME
                                 .getInputViewHeight()
                                 .toFloat() / heightDiv.toFloat()).toDp() +
-                                    if (actionsExpanded) ActionBarHeight else 0.dp)) +
+                                    (if (actionsExpanded) ActionBarHeight else 0.dp) -
+                                    // Make room for the suggestions bar shown below
+                                    (if (latinIME.inputConnectionOverridenWithSuggestions) ActionBarHeight else 0.dp))) +
                                     (currWindowActionWindow.value?.extraWindowHeight ?: 0.dp)
                         })
                         .safeKeyboardPadding()
