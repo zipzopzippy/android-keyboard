@@ -475,6 +475,8 @@ class KeyboardState(private val switchActions: SwitchActions) {
                 TAG, "onResetKeyboardStateToAlphabet: $debugState"
             )
         }
+
+        alphabetShiftState.isShiftLocked = false
         when(getKeyboardMode(editorInfo ?: EditorInfo())) {
             KeyboardId.MODE_NUMBER, KeyboardId.MODE_PHONE,
             KeyboardId.MODE_DATE, KeyboardId.MODE_TIME,

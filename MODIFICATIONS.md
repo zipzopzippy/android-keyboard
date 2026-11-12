@@ -25,6 +25,7 @@ under the [FUTO Source First License 1.1](LICENSE.md), which also covers this ve
   typing. The selected emoji category has a smaller highlight circle.
 - Long suggestions are squeezed less and get an ellipsis in the middle instead. Long email
   suggestions are split over two lines at the `@`.
+- Caps lock turns off when the app restarts the text field, for example after sending a message.
 - Symbols page (`java/personal/assets/layouts/Special/symbols.yaml`): the row under the number row
   has 9 keys (`@ # $ % & - + ( )`, without `_`, which is still on long-press of `-`), so each symbol
   sits exactly over the letter that shows it as a hint. `_` takes the place of `℅` on the second
