@@ -98,6 +98,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -238,9 +239,13 @@ fun actionBarColor(): Color =
     }
 
 
+// How much text may be squeezed horizontally before it gets an ellipsis instead
+private const val AutoFitMinScale = 0.75f
+
 // Automatically try to fit the given text to the available space in one line.
-// If text is too long, the text gets scaled horizontally to fit.
-// TODO: Could also put ellipsis in the middle
+// If text is too long, the text gets scaled horizontally to fit, up to AutoFitMinScale. Past that,
+// the middle of the text is replaced with an ellipsis. Emails that are too long are split over two
+// lines at the @ instead.
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun AutoFitText(
@@ -252,9 +257,9 @@ fun AutoFitText(
     val measurer = rememberTextMeasurer()
 
     Canvas(modifier = modifier.fillMaxSize(), contentDescription = text) {
-        val measurement = measurer.measure(
-            text = AnnotatedString(text),
-            style = style,
+        fun measure(line: String, lineStyle: TextStyle) = measurer.measure(
+            text = AnnotatedString(line),
+            style = lineStyle,
             overflow = TextOverflow.Visible,
             softWrap = false,
             maxLines = 1,
@@ -266,15 +271,69 @@ fun AutoFitText(
             density = this
         )
 
-        val scale = (size.width / measurement.size.width).coerceAtMost(1.0f)
+        // Measures the line, keeping as much of its start and end as fits with an ellipsis in the
+        // middle if it is too wide even at the minimum scale
+        fun fitLine(line: String, lineStyle: TextStyle): TextLayoutResult {
+            val full = measure(line, lineStyle)
+            val maxWidth = size.width / AutoFitMinScale
+            if(full.size.width <= maxWidth) return full
 
-        translate(left = (scale * (size.width - measurement.size.width)) / 2.0f, top = size.height / 2 - measurement.size.height / 2) {
-            scale(scaleX = scale, scaleY = 1.0f) {
-                drawText(
-                    measurement
-                )
+            fun ellipsized(keep: Int): String {
+                var head = (keep + 1) / 2
+                var tail = line.length - keep / 2
+                // Don't cut through a surrogate pair
+                if(head > 0 && line[head - 1].isHighSurrogate()) head -= 1
+                if(tail < line.length && line[tail].isLowSurrogate()) tail += 1
+                return line.substring(0, head) + "…" + line.substring(tail)
+            }
+
+            var lo = 0
+            var hi = line.length - 1
+            while(lo < hi) {
+                val mid = (lo + hi + 1) / 2
+                if(measure(ellipsized(mid), lineStyle).size.width <= maxWidth) lo = mid else hi = mid - 1
+            }
+            return measure(ellipsized(lo), lineStyle)
+        }
+
+        fun drawLine(line: TextLayoutResult, top: Float) {
+            val lineScale = (size.width / line.size.width).coerceAtMost(1.0f)
+            translate(left = (lineScale * (size.width - line.size.width)) / 2.0f, top = top) {
+                scale(scaleX = lineScale, scaleY = 1.0f) {
+                    drawText(line)
+                }
             }
         }
+
+        val measurement = measure(text, style)
+
+        // Emails that don't fit go on two lines, the local part first and then @domain
+        val atIdx = text.indexOf('@')
+        if(measurement.size.width > size.width && atIdx > 0 && atIdx < text.length - 1) {
+            val lineHeight = (size.height / 2.0f).toSp()
+            val lineStyle = style.copy(
+                fontSize = (lineHeight.value * 0.72f).coerceAtMost(style.fontSize.value).sp,
+                lineHeight = lineHeight
+            )
+
+            val lines = listOf(text.substring(0, atIdx), text.substring(atIdx)).map {
+                fitLine(it, lineStyle)
+            }
+
+            var top = size.height / 2 - lines.sumOf { it.size.height } / 2.0f
+            lines.forEach { line ->
+                drawLine(line, top)
+                top += line.size.height
+            }
+            return@Canvas
+        }
+
+        val line = if(measurement.size.width * AutoFitMinScale > size.width) {
+            fitLine(text, style)
+        } else {
+            measurement
+        }
+        drawLine(line, size.height / 2 - line.size.height / 2)
     }
 }
 
